@@ -17,17 +17,25 @@ router.get('/users', (req, res) => {
 });
 
 router.post('/users',(req,res) => {
-  // let{name,email,password} = req.body;
+  let{nameUser,emailUser,passwordUser} = req.body;
 
   let NewUserValidation = {
-    name: 'Brunin Gomes',
-    email: 'brunin@gmail.com',
-    password: "#Gb12345678"
+    name: nameUser,
+    email: emailUser,
+    password: passwordUser
   }
+
 
   let salt = bcrypt.genSaltSync(10);
   let hash = bcrypt.hashSync(NewUserValidation.password, salt);
 
+
+  
+  NewUserValidation = {
+    name: nameUser,
+    email: emailUser,
+    password: hash
+  }
 
   let NewUser = {
     name: 'Brunin Gomes',
@@ -177,7 +185,7 @@ router.post('/users',(req,res) => {
     if(isNameRight == 200){
       if(isEmailRight == 200){
         if(isPasswordRight == 200){
-          databaseUser.insert(NewUser).into('users').then(NewUser => {          
+          databaseUser.insert(NewUserValidation).into('users').then(NewUser => {          
             res.send("you suceffully added: " + NewUser.email); 
             return                  
           }).catch(error => {
@@ -370,7 +378,10 @@ router.put('/users',(req,res) => {
 })
 
 router.delete('/users',(req,res) => {
-  let email = "kawanDois@gmail.com";
+
+  let emailName = req.body.emailUser;
+
+  let email = emailName;
 
   databaseUser.select().table('users').where({email: email}).then(users => {
 

@@ -19,8 +19,10 @@ router.get('/categories', (req, res) => {
 
 router.post('/categories', (req,res) => {
 
-    newCategory = {
-        name: "comedia"
+    let newCategoryName = req.body.newCategoryName;
+
+    const newCategory = {
+        name: newCategoryName
     }
 
 
@@ -55,7 +57,7 @@ router.post('/categories', (req,res) => {
         }
 
         // outras validações
-        
+
         if (name.length < comprimentoMinimo || name.length > comprimentoMaximo) {
             errosName.push("O tamanho do name esta muito grande ou pequeno");
             statusCode = 400;
@@ -84,7 +86,6 @@ router.post('/categories', (req,res) => {
         const isNameRight = await validateName(data.name);
     
         if(isNameRight == 200){
-
             databaseCategories.insert(data).into('categories').then(data => {          
                 res.send("you suceffully added: " + data.name); 
                 return                  
@@ -107,8 +108,11 @@ router.put('/categories', (req,res) => {
     
 
     newCategory = {
-        name: "comedia",
-        nameNovo: "comedia TESTE"
+        name: ""
+    }
+
+    category = {
+        name: "",
     }
     
 
@@ -154,12 +158,17 @@ router.put('/categories', (req,res) => {
     
         if(isNameRight == 200){
 
-            databaseCategories.update(newCategory.nameNovo).into('categories').where({name: newCategory.name}).then(NewBook => {          
-                res.send("you suceffully added: " + NewBook.nameNovo); 
-                return           
-            }).catch(error => {
-                console.log(error);
-            }) 
+            databaseCategories
+            .update(newCategory)
+            .into('categories')
+            .where({ name: category.name })
+            .then((NewBook) => {
+              res.send("Você adicionou com sucesso: " + NewBook.name);
+              return;
+            })
+            .catch((error) => {
+              console.log(error);
+            });
 
         }else{
           res.send(isNameRight);
@@ -173,7 +182,10 @@ router.put('/categories', (req,res) => {
 
 
 router.delete('/categories', (req,res) => {
-    let name = "Magia";
+
+    let categoryName = req.body.categoryName;
+
+    let name = categoryName;
   
     databaseCategories.select().table('categories').where({name: name}).then(categories => {
         

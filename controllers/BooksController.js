@@ -6,7 +6,6 @@ const router = express();
 
 const databaseBook = require('../Database/DbConnection.js');
 
-
 //Books CRUD 
 
 router.get('/books', (req, res) => {
@@ -15,18 +14,80 @@ router.get('/books', (req, res) => {
     });
 });
 
+router.get('/books/categories/:categoryId', (req, res) => {
+    const categoryId = req.params.categoryId;
+  
+    databaseBook.select('books.*')
+      .from('books')
+      .join('books_categories', 'books.id', '=', 'books_categories.bookId')
+      .where('books_categories.categoriesId', categoryId)
+      .then((rows) => {
+        console.log(rows);
+        res.json(rows); 
+      })
+      .catch((error) => {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' }); 
+      })
+      .finally(() => {
+        databaseBook.destroy();
+      });
+}); 
+
+router.get('/books/authors/:authorId', (req, res) => {
+    const authorId = req.params.authorId;
+  
+    databaseBook.select('books.*')
+      .from('books')
+      .join('books_authors', 'books.id', '=', 'books_authors.bookId')
+      .where('books_authors.authorId', authorId)
+      .then((rows) => {
+        console.log(rows);
+        res.json(rows); 
+      })
+      .catch((error) => {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' }); 
+      })
+      .finally(() => {
+        databaseBook.destroy();
+      });
+});
+
+router.get('/books/publishers/:publishersId', (req, res) => {
+    const publishersId = req.params.publishersId;
+  
+    databaseBook.select('books.*')
+      .from('books')
+      .join('books_publishers', 'books.id', '=', 'books_publishers.bookId')
+      .where('books_publishers.publishersId', publishersId)
+      .then((rows) => {
+        console.log(rows);
+        res.json(rows); 
+      })
+      .catch((error) => {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' }); 
+      })
+      .finally(() => {
+        databaseBook.destroy();
+      });
+});
+
+
 router.post('/books', (req, res) => {
     
     NewBook = {
-        name: "Harry potter",
+        name: "A filosofia de nit",
         capa: "num-tem",
-        price:30.0,
-        description: "muleke descobriu que é bruxo e etc",
-        qntPages: 200,
+        price:230.0,
+        description: "Um livro que ensina sobre os fundamentos da filosfia desenvolvida por nit",
+        qntPages: 350,
         editorId:2,
         autorId:2,
         heigth:30,
-        width:50
+        width:50,
+        idCategoria: 6
     }
 
 
