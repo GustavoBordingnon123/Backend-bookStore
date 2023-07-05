@@ -36,7 +36,7 @@ router.post('/authors', (req,res) => {
       const espacosConsecutivos = /\s{2,}/; 
   
       //validação se existe categoria 
-      async function checkCategoryExists(name) {
+      async function checkAuthorsExists(name) {
           try {
             const result = await databaseAuthors.select().table('authors').where('name', name);
             if(result.length > 0){
@@ -49,7 +49,7 @@ router.post('/authors', (req,res) => {
           }
       }
 
-      const bookExists = await checkCategoryExists(name);
+      const bookExists = await checkAuthorsExists(name);
 
       if (bookExists) {
           statusCode = 400;
@@ -115,9 +115,6 @@ router.put('/authors', (req,res) => {
   newAuthor = {
     name: newAuthorName,
   }
-
-  
-
 
   async function validateName(name){
       

@@ -10,7 +10,6 @@ const databaseCategories = require('../Database/DbConnection.js');
 //Categories CRUD
 
 router.get('/categories', (req, res) => {
-    console.log('oi')
     databaseCategories.select().table('categories').then((categories) => {
       res.send(categories);
     });
@@ -19,10 +18,10 @@ router.get('/categories', (req, res) => {
 
 router.post('/categories', (req,res) => {
 
-    let newCategoryName = req.body.newCategoryName;
+    let categoryName = req.body.categoryName;
 
     const newCategory = {
-        name: newCategoryName
+        name: categoryName
     }
 
 
@@ -105,15 +104,21 @@ router.post('/categories', (req,res) => {
 
 router.put('/categories', (req,res) => {
 
+
     
+  let categoryName = req.body.categoryName;
+  let newCategoryName = req.body.newCategoryName;
 
-    newCategory = {
-        name: ""
-    }
+  category = {
+    name: categoryName,
+  }
+  
+  newCategory = {
+    name: newCategoryName,
+  }
 
-    category = {
-        name: "",
-    }
+  console.log(category)
+  console.log(newCategory)
     
 
 
@@ -188,20 +193,20 @@ router.delete('/categories', (req,res) => {
     let name = categoryName;
   
     databaseCategories.select().table('categories').where({name: name}).then(categories => {
-        
-        if(categories.length > 0 ){
+
+      if(categories.length > 0 ){
             databaseCategories.delete().where({name: name}).table('categories').then(data => {
         
                 res.statusCode = 200;
-                console.log('suceffuly delete the user: ', name);
-                res.send('suceffuly delete the user: ' + name);
+                console.log('suceffuly delete the category: ', name);
+                res.send('suceffuly delete the category: ' + name);
                           
             }).catch(error => {
                 console.log(error);
             })
   
         }else{
-            console.log('this user dont exist')
+            console.log('this c dont exist')
             res.sendStatus(400);
         }
     });

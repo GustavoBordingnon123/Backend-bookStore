@@ -17,12 +17,14 @@ router.get('/users', (req, res) => {
 });
 
 router.post('/users',(req,res) => {
-  let{nameUser,emailUser,passwordUser} = req.body;
+  let{nameUser,emailUser,passwordUser,confirmPassword} = req.body;
 
+  //to validate without hash and with confirm password
   let NewUserValidation = {
     name: nameUser,
     email: emailUser,
-    password: passwordUser
+    password: passwordUser,
+    confirmPassword: confirmPassword
   }
 
 
@@ -30,8 +32,8 @@ router.post('/users',(req,res) => {
   let hash = bcrypt.hashSync(NewUserValidation.password, salt);
 
 
-  
-  NewUserValidation = {
+  //to insert with hash and without confirm password
+  newUserInsert = {
     name: nameUser,
     email: emailUser,
     password: hash
@@ -163,10 +165,10 @@ router.post('/users',(req,res) => {
       statusCode = 400;
     }
   
-    // if(password != confirmPassword){
-    //   passwordErrors.push("A senha precisa ser igual ao confirmar senha");
-    //   statusCode = 400;
-    // }
+    if(password != confirmPassword){
+      passwordErrors.push("A senha precisa ser igual ao confirmar senha");
+      statusCode = 400;
+    }
 
     if(statusCode != 400){
       return 200;
@@ -185,7 +187,7 @@ router.post('/users',(req,res) => {
     if(isNameRight == 200){
       if(isEmailRight == 200){
         if(isPasswordRight == 200){
-          databaseUser.insert(NewUserValidation).into('users').then(NewUser => {          
+          databaseUser.insert(newUserInsert).into('users').then(NewUser => {          
             res.send("you suceffully added: " + NewUser.email); 
             return                  
           }).catch(error => {
@@ -211,12 +213,16 @@ router.post('/users',(req,res) => {
 });
 
 router.put('/users',(req,res) => {
-  // let{name,email,password} = req.body;
+
+  let{newNameUser,emailUser,newEmailUser,newPasswordUser,newConfirmPasswordUser} = req.body;
+
 
   let NewUserValidation = {
-    name: 'Brunin Gomes',
-    email: 'brunin@gmail.com',
-    password: "#Gb12345678"
+    name: newNameUser,
+    oldEmail: emailUser,
+    newEmail: newEmailUser,
+    password: newPasswordUser,
+    confirmPassword: newConfirmPasswordUser,
   }
 
   let salt = bcrypt.genSaltSync(10);
@@ -224,12 +230,11 @@ router.put('/users',(req,res) => {
 
 
   let NewUser = {
-      name: 'Bruninho Gomes',
-      email: 'brunin@gmail.com',
+      name: newNameUser,
+      email: newEmailUser,
       password: hash
   }
   
-
   function validateName(nome){
         
     let errosName = [];
@@ -296,7 +301,7 @@ router.put('/users',(req,res) => {
 
   }
 
-  function validatePassword(password) {
+  function validatePassword(password,confirmPassword) {
 
     let passwordErrors = [];
     let statusCode = 200;
@@ -328,10 +333,10 @@ router.put('/users',(req,res) => {
       statusCode = 400;
     }
   
-    // if(password != confirmPassword){
-    //   passwordErrors.push("A senha precisa ser igual ao confirmar senha");
-    //   statusCode = 400;
-    // }
+    if(password != confirmPassword){
+      passwordErrors.push("A senha precisa ser igual ao confirmar senha");
+      statusCode = 400;
+    }
 
     if(statusCode != 400){
       return 200;
@@ -343,21 +348,24 @@ router.put('/users',(req,res) => {
   async function runValidation(data) {
 
     const isNameRight = validateName(data.name);
-    const isEmailRight = await validateEmail(data.email);
+    const isEmailRight = await validateEmail(data.newEmail);
     const isPasswordRight = validatePassword(data.password, data.confirmPassword);
 
 
     if(isNameRight == 200){
       if(isEmailRight == 200){
         if(isPasswordRight == 200){
-
-          databaseUser.update(NewUser).into('users').where({email: NewUserValidation.email}).then(NewUser => {          
-            res.send("you suceffully added: " + NewUser.email); 
-            return           
-
-          }).catch(error => {
+          databaseUser
+          .update(NewUser)
+          .into('users')
+          .where({ email: NewUserValidation.oldEmail })
+          .then((NewBook) => {
+            res.send("Você adicionou com sucesso: " + NewBook.name);
+            return;
+          })
+          .catch((error) => {
             console.log(error);
-          })  
+          });
         }else{
           res.send(isPasswordRight);
           return

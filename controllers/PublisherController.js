@@ -16,10 +16,10 @@ router.get('/publishers', (req, res) => {
 
 router.post('/publishers', (req,res) => {
 
-  let newPublisherName = req.body.newPublisherName;
+  let publisherName = req.body.publisherName;
 
   newCategory = {
-      name: newPublisherName
+      name: publisherName
   }
 
 
@@ -105,14 +105,18 @@ router.put('/publishers', (req,res) => {
 
   
 
-  newPublisher = {
-    name: "Panini",
-  }
+  let publisherName = req.body.publisherName;
+  let newPublisherName = req.body.newPublisherName;
 
   publisher = {
-    name: 'Dc-comics'
+    name: publisherName,
   }
   
+  newPublisher = {
+    name: newPublisherName,
+  }
+  
+
 
 
   async function validateName(name){

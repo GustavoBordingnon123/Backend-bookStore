@@ -77,17 +77,23 @@ router.get('/books/publishers/:publishersId', (req, res) => {
 
 router.post('/books', (req, res) => {
     
+    let
+    {
+        nameBook,capaBook,priceBook,descriptionBook,qntPagesBook,
+        editorIdBook,authorIdBook,heigthBook,widthBook,idCategoriaBook
+    } = req.body;
+
     NewBook = {
-        name: "A filosofia de nit",
-        capa: "num-tem",
-        price:230.0,
-        description: "Um livro que ensina sobre os fundamentos da filosfia desenvolvida por nit",
-        qntPages: 350,
-        editorId:2,
-        autorId:2,
-        heigth:30,
-        width:50,
-        idCategoria: 6
+        name: nameBook,
+        capa: capaBook,
+        price:priceBook,
+        description: descriptionBook,
+        qntPages: qntPagesBook,
+        editorId:editorIdBook,
+        authorId:authorIdBook,
+        heigth:heigthBook,
+        width:widthBook,
+        idCategoria: idCategoriaBook
     }
 
 
@@ -98,7 +104,7 @@ router.post('/books', (req, res) => {
     
         const comprimentoMinimo = 5;
         const comprimentoMaximo = 50;
-        const caracteresPermitidos = /^[A-Za-z\s]+$/; 
+        const caracteresPermitidos = /^[A-Za-z0-9\s]+$/; 
         const espacosConsecutivos = /\s{2,}/; 
     
         //validação se existe livro 
@@ -369,29 +375,28 @@ router.post('/books', (req, res) => {
 })
 
 router.put('/books', (req, res) => {
+
+    let
+    {
+        nameBook,newNameBook,newCapaBook,newPriceBook,newDescriptionBook,newQntPagesBook,
+        newEditorIdBook,newAuthorIdBook,newHeigthBook,newWidthBook,newIdCategoriaBook,
+    } = req.body;
     
     Book = {
-        name: "Harry potter",
-        capa: "num-tem",
-        price:30.0,
-        description: "muleke descobriu que é bruxo e etc",
-        qntPages: 200,
-        editorId:2,
-        autorId:2,
-        heigth:30,
-        width:50
+        name:nameBook,
     }
 
     NewBook = {
-        name: "Harry potter Novoo",
-        capa: "num-tem",
-        price:30.0,
-        description: "muleke descobriu que é bruxo e etc",
-        qntPages: 200,
-        editorId:2,
-        autorId:2,
-        heigth:30,
-        width:50
+        name: newNameBook,
+        capa: newCapaBook,
+        price:newPriceBook,
+        description: newDescriptionBook,
+        qntPages: newQntPagesBook,
+        editorId:newEditorIdBook,
+        authorId:newAuthorIdBook,
+        heigth:newHeigthBook,
+        width:newWidthBook,
+        idCategoria: newIdCategoriaBook,
     }
 
 
@@ -402,7 +407,7 @@ router.put('/books', (req, res) => {
     
         const comprimentoMinimo = 5;
         const comprimentoMaximo = 50;
-        const caracteresPermitidos = /^[A-Za-z\s]+$/; 
+        const caracteresPermitidos = /^[A-Za-z0-9\s]+$/; 
         const espacosConsecutivos = /\s{2,}/; 
     
         //validação se existe livro 
@@ -674,16 +679,18 @@ router.put('/books', (req, res) => {
 })
 
 router.delete('/books',(req,res) => {
-    let name = "Harry potter Novoo";
+
+    let nameBook = req.body.nameBook;
+
   
-    databaseBook.select().table('books').where({name: name}).then(books => {
+    databaseBook.select().table('books').where({name: nameBook}).then(books => {
         
         if(books.length > 0 ){
-            databaseBook.delete().where({name: name}).table('books').then(data => {
+            databaseBook.delete().where({name: nameBook}).table('books').then(data => {
         
                 res.statusCode = 200;
-                console.log('suceffuly delete the user: ', name);
-                res.send('suceffuly delete the user: ' + name);
+                console.log('suceffuly delete the user: ', nameBook);
+                res.send('suceffuly delete the user: ' + nameBook);
                           
             }).catch(error => {
                 console.log(error);
